@@ -9,8 +9,8 @@
 
 
 WORKDIR=$1
-FILE=$WORKDIR/$2
-OUTPUTDIR=$WORKDIR/$3
+FILE=$2
+OUTPUTDIR=$3
 
 # Checks existence of provided directories 
 if [ -d "$WORKDIR" ]; then
@@ -23,6 +23,7 @@ fi
 if [ -f "$FILE" ]; then
     echo "File provided exists."
 else
+    echo $FILE
     echo "File provided does not exist."
     exit 1
 fi

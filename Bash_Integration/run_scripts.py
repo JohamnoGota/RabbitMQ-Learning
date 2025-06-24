@@ -1,8 +1,8 @@
 import os
 import subprocess
 
-workdir = "/Users/juanmagonzalez/VsCode/RabbitLearning/Tutorials"
-file = "Raw_files/raw1.txt"
+workdir = "/Users/juanmagonzalez/VsCode/RabbitLearning/RabbitAutomation"
+file = "/Users/juanmagonzalez/VsCode/RabbitLearning/RabbitAutomation/Raw_files/raw1.txt"
 outdir = "01_out_clean"
 command = ["/Users/juanmagonzalez/VsCode/RabbitLearning/Tutorials/Bash_Scripts/01_clean.sh", 
             workdir, file, outdir]

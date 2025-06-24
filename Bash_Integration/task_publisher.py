@@ -31,18 +31,21 @@ def process_workdir():
 
 def process_filedir():
     print("Escriba el directorio dentro de workdir donde se encuentran los archivos a procesar")
-    filedir = workdir + input()
+    filedir = workdir + '/' + input()
     # Check if work dir actually exists
-    if os.path.isdir(workdir + filedir):
+    if os.path.isdir(filedir):
         print('File directory existe')
     else:
-        print('Working directory no existe, intentelo de nuevo')
-        filedir = process_filedir
+        print(f'{filedir} no existe, intentelo de nuevo')
+        filedir = process_filedir()
     return filedir
+
 
 # Getting the necessary directories 
 workdir = process_workdir()
 filedir = process_filedir()
+print("Autenticación completa!")
+
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
@@ -50,17 +53,18 @@ channel = connection.channel()
 # Declaring the queue, we can do this as many times as we want 
 channel.queue_declare(queue='task_queue', durable=True) # Making it durable means it will outlive a node reset
 
-# Takes a command line argument or if none is given just 'Hello, World!'
-message = ' '.join(sys.argv[1:]) or "Hello World!"
+# Ahora necesitamos crear un loop para todos los archivos en el directorio dado
 
-# The exchange is an empty string by which we connect to the queue, this is the method by which we publish it 
-channel.basic_publish(exchange='',
-                      routing_key='task_queue',
-                      body=message,
-                      properties=pika.BasicProperties(
-                         delivery_mode = pika.DeliveryMode.Persistent
-                      ))
-
-print(f" [x] Sent {message}")
+for file in os.listdir(filedir):
+    filepath = os.path.join(filedir, file)
+    message = workdir + '#' + filedir + '#' + file
+    # The exchange is an empty string by which we connect to the queue, this is the method by which we publish it 
+    channel.basic_publish(exchange='',
+                        routing_key='task_queue',
+                        body=message,
+                        properties=pika.BasicProperties(
+                            delivery_mode = pika.DeliveryMode.Persistent
+                        ))
+    print(f" [x] Sent {message}")
 
 connection.close()
